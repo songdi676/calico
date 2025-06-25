@@ -7,7 +7,7 @@ DEV_TAG_SUFFIX        ?=0.dev
 
 # Name of the images.
 # e.g., <registry>/<name>:<tag>
-NODE_IMAGE            ?=node
+NODE_IMAGE            ?=songdi676/node
 WINDOWS_IMAGE         ?=windows
 WINDOWS_UPGRADE_IMAGE ?=windows-upgrade
 

@@ -76,7 +76,19 @@ func (r *DefaultRuleRenderer) makeNATOutgoingRuleIPTables(ipVersion uint8, proto
 func (r *DefaultRuleRenderer) NATOutgoingChain(natOutgoingActive bool, ipVersion uint8) *iptables.Chain {
 	var rules []iptables.Rule
 	if natOutgoingActive {
+		// 设置默认的SNAT规则，优先级如下：
+		// 1. 优先使用配置中的 IPv4 NAT 地址 (NATOutgoingAddress4)
+		// 2. 其次使用配置中的 IPv6 NAT 地址 (NATOutgoingAddress6)
+		// 3. 最后使用通用 NAT 地址 (NATOutgoingAddress)
+		// 若以上均未配置，则默认使用 MASQUERADE 动作
 		var defaultSnatRule iptables.Action = iptables.MasqAction{}
+		//zzw
+		if r.Config.NATOutgoingAddress4 != nil {
+			defaultSnatRule = iptables.SNATAction{ToAddr: r.Config.NATOutgoingAddress4.String()}
+		}
+		if r.Config.NATOutgoingAddress6 != nil {
+			defaultSnatRule = iptables.SNATAction{ToAddr: r.Config.NATOutgoingAddress6.String()}
+		}
 		if r.Config.NATOutgoingAddress != nil {
 			defaultSnatRule = iptables.SNATAction{ToAddr: r.Config.NATOutgoingAddress.String()}
 		}

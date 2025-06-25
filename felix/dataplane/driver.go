@@ -192,6 +192,7 @@ func StartDataplaneDriver(configParams *config.Config,
 		felixHostname := configParams.FelixHostname
 
 		var felixNodeZone string
+		var ipv4Addrs, ipv6Addrs net.IP
 		if k8sClientSet != nil {
 
 			// Code defensively here as k8sClientSet may be nil for certain FV tests e.g. OpenStack
@@ -203,6 +204,22 @@ func StartDataplaneDriver(configParams *config.Config,
 			}
 
 			felixNodeZone = felixNode.Labels[coreV1.LabelTopologyZone]
+
+			// 1. 从Kubernetes节点状态获取地址
+			//add zzw
+			for _, addr := range felixNode.Status.Addresses {
+				if addr.Type == corev1.NodeInternalIP || addr.Type == corev1.NodeExternalIP {
+					if ip := net.ParseIP(addr.Address); ip != nil {
+						if ip.To4() != nil {
+							ipv4Addrs = ip
+							log.Infof("newland finf ipv4Addrs: %s", ipv4Addrs)
+						} else {
+							ipv6Addrs = ip
+							log.Infof("newland finf ipv6Addrs: %s", ipv6Addrs)
+						}
+					}
+				}
+			}
 		}
 
 		dpConfig := intdataplane.Config{
@@ -284,6 +301,9 @@ func StartDataplaneDriver(configParams *config.Config,
 				NATOutgoingAddress:                 configParams.NATOutgoingAddress,
 				BPFEnabled:                         configParams.BPFEnabled,
 				ServiceLoopPrevention:              configParams.ServiceLoopPrevention,
+				//zzw
+				NATOutgoingAddress4: ipv4Addrs,
+				NATOutgoingAddress6: ipv6Addrs,
 			},
 			Wireguard: wireguard.Config{
 				Enabled:             wireguardEnabled,

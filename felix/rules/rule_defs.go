@@ -335,6 +335,9 @@ type Config struct {
 	BPFEnabled         bool
 
 	ServiceLoopPrevention string
+	//add zzw
+	NATOutgoingAddress4 net.IP
+	NATOutgoingAddress6 net.IP
 }
 
 var unusedBitsInBPFMode = map[string]bool{

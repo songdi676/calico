@@ -1,0 +1,41 @@
+name:  CI
+env:
+  # Common versions
+  GO_VERSION: "1.21"
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go environment
+        uses: actions/setup-go@v3.2.1
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Build Binaries
+        run: |
+          make build ARCH=amd64
+      - name: Save binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: calico-node-amd64
+          path: dist/bin/calico-node-amd64
+      - name: Build Image
+        run: |
+          make image ARCH=amd64
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: songdi676
+          password: qq8856676
+      - name: push
+        run: |
+          docker push songdi676/node:latest-amd64
