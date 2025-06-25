@@ -208,7 +208,7 @@ func StartDataplaneDriver(configParams *config.Config,
 			// 1. 从Kubernetes节点状态获取地址
 			//add zzw
 			for _, addr := range felixNode.Status.Addresses {
-				if addr.Type == corev1.NodeInternalIP || addr.Type == corev1.NodeExternalIP {
+				if addr.Type == coreV1.NodeInternalIP || addr.Type == coreV1.NodeExternalIP {
 					if ip := net.ParseIP(addr.Address); ip != nil {
 						if ip.To4() != nil {
 							ipv4Addrs = ip
