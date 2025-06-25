@@ -22,7 +22,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
       - name: Build Binaries
         run: |
-          make build ARCH=amd64
+          make -C node build ARCH=amd64
       - name: Save binaries
         uses: actions/upload-artifact@v3
         with:
@@ -30,7 +30,7 @@ jobs:
           path: dist/bin/calico-node-amd64
       - name: Build Image
         run: |
-          make image ARCH=amd64
+          make -C node image ARCH=amd64
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
