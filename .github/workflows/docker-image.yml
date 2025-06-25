@@ -28,6 +28,11 @@ jobs:
         with:
           name: calico-node-amd64
           path: /home/runner/work/calico/calico/node/dist/bin/calico-node-amd64
+      - name: Save binaries
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: mountns-amd64
+          path: /home/runner/work/calico/calico/node/dist/bin/mountns-amd64
       - name: Build Image
         run: |
           make -C node image ARCH=amd64
