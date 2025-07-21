@@ -84,10 +84,10 @@ func (r *DefaultRuleRenderer) NATOutgoingChain(natOutgoingActive bool, ipVersion
 		// 注意：配置项优先级为 NATOutgoingAddress > NATOutgoingAddress6 > NATOutgoingAddress4
 		var defaultSnatRule iptables.Action = iptables.MasqAction{}
 		//zzw
-		if r.Config.NATOutgoingAddress4 != nil {
+		if r.Config.NATOutgoingAddress4 != nil && ipVersion == 4 {
 			defaultSnatRule = iptables.SNATAction{ToAddr: r.Config.NATOutgoingAddress4.String()}
 		}
-		if r.Config.NATOutgoingAddress6 != nil {
+		if r.Config.NATOutgoingAddress6 != nil && ipVersion == 6 {
 			defaultSnatRule = iptables.SNATAction{ToAddr: r.Config.NATOutgoingAddress6.String()}
 		}
 		if r.Config.NATOutgoingAddress != nil {
